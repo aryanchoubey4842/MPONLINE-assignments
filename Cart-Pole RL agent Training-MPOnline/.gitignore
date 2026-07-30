@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+.venv/
+.conda/
+models/
+videos/
+logs/
+graphs/
+*.zip

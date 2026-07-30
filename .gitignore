@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Large files and models
+*.csv
+*.dat
+*.pkl
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.keras
+*.weights
+*.mp4
+*.avi
+*.mov
+.chroma_db/
+logs.txt
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignored extra projects
+ANN-project/
+Medical_Insurance_cost_prediction_MLR-MPOnline/
+Sentiment-chatbot-MPOnline/
+Student-grade-predictor-MPOnline/
+Iris-Flower-Classifier-API-Web-UI-MPOnline/
+
+# Large archives
+*.tar.gz
+*.zip
+*.7z

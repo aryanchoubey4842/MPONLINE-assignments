@@ -1,0 +1,9 @@
+langchain==0.1.16
+langchain-community==0.0.34
+langchain-google-genai==1.0.3
+chromadb==0.4.24
+tiktoken==0.6.0
+pypdf==4.2.0
+python-dotenv==1.0.1
+Flask==3.0.3
+gunicorn==22.0.0

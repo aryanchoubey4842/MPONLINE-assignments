@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMatch | AI Movie Recommendations</title>
+    <meta name="description" content="Discover your next favorite movie with AI-powered recommendations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <h1 class="gradient-text">CineMatch</h1>
+            <p class="subtitle">AI-powered movie recommendations</p>
+        </header>
+
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="movie-input" placeholder="Enter a movie you like (e.g., The Matrix)..." autocomplete="off" />
+                <button id="search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+            <div id="error-message" class="error-message hidden"></div>
+        </section>
+
+        <section id="results-section" class="results-section hidden">
+            <h2 class="results-title">Because you liked <span id="searched-movie" class="highlight"></span></h2>
+            <div id="recommendations-grid" class="recommendations-grid">
+                <!-- Movie cards will be injected here -->
+            </div>
+        </section>
+
+        <div id="loading-spinner" class="loading-spinner hidden">
+            <div class="spinner"></div>
+        </div>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

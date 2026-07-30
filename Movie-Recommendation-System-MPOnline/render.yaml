@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: movie-recommender
+    env: docker
+    plan: free
+    branch: main
+    autoDeploy: false
+    envVars:
+      - key: PORT
+        value: 8000

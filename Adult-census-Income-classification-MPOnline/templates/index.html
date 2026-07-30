@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adult Census Income Classifier</title>
+    <meta name="description" content="Predict whether annual income exceeds $50K using census data and machine learning.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="header-icon">💰</div>
+        <h1>Income Classifier</h1>
+        <p class="subtitle">Predict whether annual income exceeds <strong>$50K</strong> using census data</p>
+    </header>
+
+    {% if result %}
+    <div class="result-card {{ 'high-income' if result.is_high_income else 'low-income' }}">
+        <div class="result-label">Predicted Income</div>
+        <div class="result-value">{{ result.prediction }}</div>
+        <div class="result-confidence">Model Confidence: {{ result.confidence }}%</div>
+        <div class="result-bar">
+            <div class="result-bar-fill" style="width: {{ result.confidence }}%"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <form action="/predict" method="POST" class="prediction-form" id="prediction-form">
+        <!-- ── Personal Information ─────────────────────────────────── -->
+        <fieldset class="form-section">
+            <legend>Personal Information</legend>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" required
+                           min="17" max="90" placeholder="e.g. 39"
+                           value="{{ form_data.age if form_data else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="sex">Sex</label>
+                    <select id="sex" name="sex" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.sex %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.sex == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="race">Race</label>
+                    <select id="race" name="race" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.race %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.race == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="native_country">Native Country</label>
+                    <select id="native_country" name="native_country" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.native_country %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.native_country == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ── Work & Education ─────────────────────────────────────── -->
+        <fieldset class="form-section">
+            <legend>Work & Education</legend>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="workclass">Work Class</label>
+                    <select id="workclass" name="workclass" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.workclass %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.workclass == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="education_num">Education (Years)</label>
+                    <input type="number" id="education_num" name="education_num" required
+                           min="1" max="16" placeholder="e.g. 13"
+                           value="{{ form_data.education_num if form_data else '' }}">
+                    <span class="hint">1 = Preschool … 13 = Bachelors … 16 = Doctorate</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="occupation">Occupation</label>
+                    <select id="occupation" name="occupation" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.occupation %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.occupation == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="hours_per_week">Hours / Week</label>
+                    <input type="number" id="hours_per_week" name="hours_per_week" required
+                           min="1" max="99" placeholder="e.g. 40"
+                           value="{{ form_data.hours_per_week if form_data else '' }}">
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ── Family & Relationship ────────────────────────────────── -->
+        <fieldset class="form-section">
+            <legend>Family & Relationship</legend>
+            <div class="form-grid two-col">
+                <div class="form-group">
+                    <label for="marital_status">Marital Status</label>
+                    <select id="marital_status" name="marital_status" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.marital_status %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.marital_status == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="relationship">Relationship</label>
+                    <select id="relationship" name="relationship" required>
+                        <option value="" disabled {{ 'selected' if not form_data else '' }}>Select...</option>
+                        {% if columns_info %}
+                        {% for val in columns_info.categorical_options.relationship %}
+                        <option value="{{ val }}" {{ 'selected' if form_data and form_data.relationship == val else '' }}>{{ val }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ── Capital & Finances ───────────────────────────────────── -->
+        <fieldset class="form-section">
+            <legend>Capital & Finances</legend>
+            <div class="form-grid two-col">
+                <div class="form-group">
+                    <label for="capital_gain">Capital Gain ($)</label>
+                    <input type="number" id="capital_gain" name="capital_gain" required
+                           min="0" max="99999" placeholder="e.g. 0"
+                           value="{{ form_data.capital_gain if form_data else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="capital_loss">Capital Loss ($)</label>
+                    <input type="number" id="capital_loss" name="capital_loss" required
+                           min="0" max="99999" placeholder="e.g. 0"
+                           value="{{ form_data.capital_loss if form_data else '' }}">
+                </div>
+            </div>
+        </fieldset>
+
+        <button type="submit" id="predict-btn">
+            <span class="btn-text">Predict Income</span>
+            <span class="btn-icon">→</span>
+        </button>
+    </form>
+
+    <footer class="footer">
+        <p>Built with scikit-learn Random Forest · UCI Adult Census Dataset (1994)</p>
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CartPole Balance - PPO Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1 class="logo">CartPole <span>AI</span></h1>
+            <p class="subtitle">Proximal Policy Optimization</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="video-section">
+                <div class="video-wrapper glass-panel">
+                    <div id="loading-overlay" class="loading-overlay hidden">
+                        <div class="spinner"></div>
+                        <p>Running Simulation...</p>
+                    </div>
+                    <video id="agent-video" controls autoplay loop muted>
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            
+            <div class="controls-section glass-panel">
+                <h2>AI Controls</h2>
+                <p>Trigger the PPO model to perform a new CartPole balancing simulation.</p>
+                <button id="simulate-btn" class="btn primary-btn">
+                    <span class="btn-text">Run New Simulation</span>
+                </button>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <p>Powered by Stable Baselines3 &amp; Gymnasium</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const simulateBtn = document.getElementById("simulate-btn");
+            const loadingOverlay = document.getElementById("loading-overlay");
+            const agentVideo = document.getElementById("agent-video");
+            
+            // Load latest video on start
+            fetchLatestVideo();
+            
+            simulateBtn.addEventListener("click", () => {
+                simulateBtn.disabled = true;
+                loadingOverlay.classList.remove("hidden");
+                agentVideo.pause();
+                
+                fetch("/run-simulation", { method: "POST" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            fetchLatestVideo();
+                        } else {
+                            alert("Error running simulation: " + data.message);
+                            resetUI();
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("An error occurred while running the simulation.");
+                        resetUI();
+                    });
+            });
+            
+            function fetchLatestVideo() {
+                fetch("/latest-video")
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            agentVideo.src = data.video_url;
+                            agentVideo.load();
+                            agentVideo.play().catch(e => console.log("Autoplay prevented"));
+                        }
+                        resetUI();
+                    })
+                    .catch(err => {
+                        console.error("No recent video found.", err);
+                        resetUI();
+                    });
+            }
+            
+            function resetUI() {
+                simulateBtn.disabled = false;
+                loadingOverlay.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+</html>
